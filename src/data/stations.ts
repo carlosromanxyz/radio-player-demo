@@ -14,7 +14,7 @@ export const stations = [
   {
     name: "Radio Carabineros de Chile",
     url: "https://www.carabineros.cl/radio",
-    image: "https://www.carabineros.cl/radio/wp-content/uploads/2021/05/logo.png",
+    image: "https://www.carabineros.cl/radio/wp-content/uploads/2021/05/logo.png", // Fake image, not found in the website
     streamUrl: "https://streaming.prositel.cl/8374/stream",
   }
 ];
