@@ -5,9 +5,9 @@ import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { Command, CommandInput, CommandItem, CommandList } from "./ui/command";
-import Image from "next/image";
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "./ui/command";
 import { cn } from "@/lib/utils";
+import { CommandGroup } from "cmdk";
 
 interface IStationSelector {
   stations: {
@@ -21,16 +21,16 @@ interface IStationSelector {
 export default function StationSelector({ stations }: IStationSelector) {
   const { setStation } = useRadioStationStore();
   const [open, setOpen] = useState(false)
-  const [value, setValue] = useState("")
-
+  const [stationName, setStationName] = useState("")
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant={'outline'}
           role="comobobox"
+          aria-expanded={open}
         >
-          {value ? stations.find((station) => station.name === value)?.name : "Select a station"}
+          {stationName ? stations.find((station) => station.name === stationName)?.name : "Select a station"}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -38,25 +38,23 @@ export default function StationSelector({ stations }: IStationSelector) {
         <Command>
           <CommandInput placeholder="Search radio station..." />
           <CommandList>
-            {stations
-              .filter((station) => station.name.toLowerCase().includes(value.toLowerCase()))
-              .map((station) => (
+            <CommandEmpty>{'No stations found.'}</CommandEmpty>
+            <CommandGroup>
+              {stations.map((station) => (
                 <CommandItem
                   key={station.name}
-                  onClick={() => {
-                    setValue(station.name) // Optional to show the selected station
+                  value={station.name}
+                  onSelect={() => {
+                    setStationName(station.name)
                     setStation(station)
                     setOpen(false)
                   }}
                 >
-                  <Image src={station.image} alt={station.name} className="h-6 w-6 rounded-full" />
                   <span className="ml-2">{station.name}</span>
-                  <Check className={cn(
-                    "ml-auto",
-                    station.name === value ? "opacity-100" : "opacity-0"
-                  )} />
+                  <Check className={cn("ml-auto", station.name === stationName ? "opacity-100" : "opacity-0")} />
                 </CommandItem>
               ))}
+            </CommandGroup>
           </CommandList>
         </Command>
       </PopoverContent>
